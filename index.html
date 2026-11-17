@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XIÓNGMÃO Investment Portfolio | Core Stock-Options Trading</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#0B132B',
+                            card: '#1C2541',
+                            green: '#064E3B',
+                            emerald: '#10B981',
+                            gold: '#F59E0B',
+                            goldLight: '#FBBF24',
+                            light: '#F8FAFC'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .hero-gradient {
+            background: radial-gradient(circle at 50% 30%, rgba(16, 185, 129, 0.15) 0%, rgba(11, 19, 43, 1) 70%);
+        }
+        .gold-glow {
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.25);
+        }
+        .green-glow {
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.25);
+        }
+    </style>
+</head>
+<body class="bg-[#0B132B] text-slate-100 antialiased selection:bg-emerald-500 selection:text-white">
+
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-[#0B132B]/80 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-amber-500 flex items-center justify-center font-bold text-xl text-white shadow-lg">
+                    🐼
+                </div>
+                <div>
+                    <span class="text-xl font-black tracking-wider bg-gradient-to-r from-white via-slate-200 to-amber-400 bg-clip-text text-transparent">XIÓNGMÃO</span>
+                    <span class="block text-xs font-semibold tracking-widest text-emerald-400 uppercase">Investment Portfolio</span>
+                </div>
+            </div>
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-300">
+                <a href="#overview" class="hover:text-amber-400 transition">Overview</a>
+                <a href="#calculator" class="hover:text-amber-400 transition">ROI Calculator</a>
+                <a href="#tiers" class="hover:text-amber-400 transition">Tiers</a>
+                <a href="#comparison" class="hover:text-amber-400 transition">Schedules</a>
+                <a href="#register" class="hover:text-amber-400 transition">Register</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <a href="#register" class="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 shadow-lg shadow-amber-500/20 transition transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-bolt mr-2"></i> Invest Now
+                </a>
+                <button id="mobile-menu-btn" class="md:hidden text-slate-300 hover:text-white focus:outline-none p-2">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-4 pt-2 pb-4 space-y-2 bg-[#1C2541] border-b border-slate-800">
+            <a href="#overview" class="block px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800">Overview</a>
+            <a href="#calculator" class="block px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800">ROI Calculator</a>
+            <a href="#tiers" class="block px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800">Tiers</a>
+            <a href="#comparison" class="block px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800">Schedules</a>
+            <a href="#register" class="block px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800">Register & Pay</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative hero-gradient py-20 lg:py-32 overflow-hidden border-b border-slate-800/60">
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#10B981_1px,transparent_1px)] [background-size:24px_24px]"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <span class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase tracking-widest mb-6">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Confidential Investment Proposal</span>
+            </span>
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight mb-6 max-w-4xl mx-auto leading-tight">
+                Core Stock-Options <span class="bg-gradient-to-r from-emerald-400 to-amber-400 bg-clip-text text-transparent">Trading Program</span>
+            </h1>
+            <p class="text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto mb-10 font-normal leading-relaxed">
+                Structured for steady income generation and accelerated ROI schedules with professional risk-managed execution.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#calculator" class="w-full sm:w-auto px-8 py-4 rounded-xl font-bold bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 shadow-xl shadow-emerald-500/20 transition transform hover:-translate-y-0.5 flex items-center justify-center">
+                    <span>Calculate Your ROI</span>
+                    <i class="fa-solid fa-arrow-right ml-2"></i>
+                </a>
+                <a href="#register" class="w-full sm:w-auto px-8 py-4 rounded-xl font-bold bg-[#1C2541] hover:bg-slate-800 border border-slate-700 text-white shadow-xl transition flex items-center justify-center">
+                    <i class="fa-solid fa-shield-halved text-amber-400 mr-2"></i> Official Channels
+                </a>
+            </div>
+            
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto mt-16 pt-12 border-t border-slate-800">
+                <div class="bg-[#1C2541]/50 backdrop-blur p-6 rounded-2xl border border-slate-800">
+                    <div class="text-3xl font-black text-amber-400 mb-1">$2k - $5k</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Entry Tiers A-D</div>
+                </div>
+                <div class="bg-[#1C2541]/50 backdrop-blur p-6 rounded-2xl border border-slate-800">
+                    <div class="text-3xl font-black text-emerald-400 mb-1">20-25 Days</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Standard Payout Cycle</div>
+                </div>
+                <div class="bg-[#1C2541]/50 backdrop-blur p-6 rounded-2xl border border-slate-800">
+                    <div class="text-3xl font-black text-amber-400 mb-1">32.1%</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Average Standard ROI</div>
+                </div>
+                <div class="bg-[#1C2541]/50 backdrop-blur p-6 rounded-2xl border border-slate-800">
+                    <div class="text-3xl font-black text-emerald-400 mb-1">164.2%</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Double Payout (x2) ROI</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Strategy Overview Section -->
+    <section id="overview" class="py-24 bg-[#0B132B] relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold tracking-widest text-amber-400 uppercase mb-3">Strategy Overview</h2>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-white">Systematic Market Capture</h3>
+                <p class="text-slate-400 mt-4">Built upon robust quantitative analytics and disciplined options writing frameworks.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="bg-[#1C2541] p-8 rounded-2xl border border-slate-800 hover:border-emerald-500/50 transition group">
+                    <div class="w-14 h-14 rounded-xl bg-emerald-950 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-2xl mb-6 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-white mb-3">Core Trading Mechanism</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Powered by systematic stock-options trading strategies designed to capture consistent market yield across high-liquidity equity indices and equities.
+                    </p>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-[#1C2541] p-8 rounded-2xl border border-slate-800 hover:border-amber-500/50 transition group">
+                    <div class="w-14 h-14 rounded-xl bg-amber-950 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl mb-6 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-white mb-3">Structured Payout Windows</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Standard payout cycle operates within a reliable 20–25 day schedule with flexible compounding and multi-payout schedule upgrade options.
+                    </p>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-[#1C2541] p-8 rounded-2xl border border-slate-800 hover:border-red-500/50 transition group">
+                    <div class="w-14 h-14 rounded-xl bg-red-950 border border-red-500/30 flex items-center justify-center text-red-400 text-2xl mb-6 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-white mb-3">Risk Management Note</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        While structured returns are actively targeted through options hedging, returns are non-guaranteed and market exposure losses are possible.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive ROI Calculator Section -->
+    <section id="calculator" class="py-24 bg-[#121A33] border-y border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold tracking-widest text-emerald-400 uppercase mb-3">Interactive Tool</h2>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-white">Investment ROI Calculator</h3>
+                <p class="text-slate-400 mt-4">Select your tier or customize your investment amount to project potential returns.</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto bg-[#1C2541] p-8 sm:p-12 rounded-3xl border border-slate-800 shadow-2xl">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                    <!-- Controls -->
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-300 mb-3">Select Investment Tier</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <button type="button" onclick="setTier('A', 2000)" class="tier-btn px-4 py-3 rounded-xl border border-slate-700 bg-[#0B132B] font-bold text-left hover:border-emerald-500 transition active-tier" id="btn-tier-A">
+                                    <div class="text-emerald-400 text-sm">Tier A</div>
+                                    <div class="text-lg text-white">$2,000</div>
+                                </button>
+                                <button type="button" onclick="setTier('B', 3000)" class="tier-btn px-4 py-3 rounded-xl border border-slate-700 bg-[#0B132B] font-bold text-left hover:border-emerald-500 transition" id="btn-tier-B">
+                                    <div class="text-emerald-400 text-sm">Tier B</div>
+                                    <div class="text-lg text-white">$3,000</div>
+                                </button>
+                                <button type="button" onclick="setTier('C', 4000)" class="tier-btn px-4 py-3 rounded-xl border border-slate-700 bg-[#0B132B] font-bold text-left hover:border-emerald-500 transition" id="btn-tier-C">
+                                    <div class="text-emerald-400 text-sm">Tier C</div>
+                                    <div class="text-lg text-white">$4,000</div>
+                                </button>
+                                <button type="button" onclick="setTier('D', 5000)" class="tier-btn px-4 py-3 rounded-xl border border-slate-700 bg-[#0B132B] font-bold text-left hover:border-emerald-500 transition" id="btn-tier-D">
+                                    <div class="text-emerald-400 text-sm">Tier D</div>
+                                    <div class="text-lg text-white">$5,000</div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-300 mb-2">Or Custom Investment ($)</label>
+                            <input type="number" id="custom-amount" value="2000" min="2000" max="50000" step="100" oninput="calculateCustom()" class="w-full bg-[#0B132B] border border-slate-700 rounded-xl px-4 py-3 text-white font-bold focus:outline-none focus:border-emerald-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-300 mb-3">Payout Schedule</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <button type="button" onclick="setSchedule('standard')" class="sch-btn px-4 py-3 rounded-xl border border-emerald-500 bg-emerald-950/40 font-bold text-center text-white transition" id="btn-sch-standard">
+                                    Standard (20-25 Days)
+                                </button>
+                                <button type="button" onclick="setSchedule('double')" class="sch-btn px-4 py-3 rounded-xl border border-slate-700 bg-[#0B132B] font-bold text-center text-white transition" id="btn-sch-double">
+                                    Double Payout (x2)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results Panel -->
+                    <div class="bg-[#0B132B] p-8 rounded-2xl border border-slate-800 flex flex-col justify-between">
+                        <div>
+                            <div class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-2">Projection Summary</div>
+                            <div id="selected-tier-label" class="text-xl font-black text-amber-400 mb-6">Tier A ($2,000 Investment)</div>
+
+                            <div class="space-y-4 border-t border-slate-800 pt-6">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-400 text-sm">Target Payout:</span>
+                                    <span id="calc-payout" class="text-2xl font-black text-white">$3,000</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-400 text-sm">Net Profit:</span>
+                                    <span id="calc-profit" class="text-xl font-bold text-emerald-400">+$1,000</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-400 text-sm">Return on Investment (ROI):</span>
+                                    <span id="calc-roi" class="text-lg font-bold text-amber-400">50.0%</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-400 text-sm">Time Horizon:</span>
+                                    <span id="calc-time" class="text-sm font-semibold text-slate-300">20-25 Days</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 pt-6 border-t border-slate-800">
+                            <a href="#register" class="w-full py-4 rounded-xl font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 shadow-lg shadow-amber-500/20 text-center block transition">
+                                Lock In This Tier Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tier Breakdown Table Section -->
+    <section id="tiers" class="py-24 bg-[#0B132B]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold tracking-widest text-amber-400 uppercase mb-3">Tier Breakdown</h2>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-white">Investment Return Analysis</h3>
+                <p class="text-slate-400 mt-4">Compare structured returns across all standard and extended double payout tiers.</p>
+            </div>
+
+            <!-- Responsive Table Container -->
+            <div class="overflow-x-auto rounded-2xl border border-slate-800 bg-[#1C2541]">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-800 text-slate-400 text-xs font-bold uppercase tracking-wider bg-[#121A33]">
+                            <th class="p-5">Tier</th>
+                            <th class="p-5">Initial Investment</th>
+                            <th class="p-5">Standard Payout (20-25 Days)</th>
+                            <th class="p-5">Net Profit (1x)</th>
+                            <th class="p-5">ROI% (1x)</th>
+                            <th class="p-5">Double Payout (x2)</th>
+                            <th class="p-5">ROI% (x2)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/60 text-sm">
+                        <tr class="hover:bg-slate-800/40 transition">
+                            <td class="p-5 font-bold text-emerald-400">Tier A</td>
+                            <td class="p-5 font-semibold text-white">$2,000</td>
+                            <td class="p-5 text-slate-300">$3,000</td>
+                            <td class="p-5 text-emerald-400 font-bold">+$1,000</td>
+                            <td class="p-5 text-amber-400 font-bold">50.0%</td>
+                            <td class="p-5 text-slate-300">$6,000</td>
+                            <td class="p-5 text-amber-400 font-bold">200.0%</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/40 transition">
+                            <td class="p-5 font-bold text-emerald-400">Tier B</td>
+                            <td class="p-5 font-semibold text-white">$3,000</td>
+                            <td class="p-5 text-slate-300">$4,000</td>
+                            <td class="p-5 text-emerald-400 font-bold">+$1,000</td>
+                            <td class="p-5 text-amber-400 font-bold">33.3%</td>
+                            <td class="p-5 text-slate-300">$8,000</td>
+                            <td class="p-5 text-amber-400 font-bold">166.7%</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/40 transition">
+                            <td class="p-5 font-bold text-emerald-400">Tier C</td>
+                            <td class="p-5 font-semibold text-white">$4,000</td>
+                            <td class="p-5 text-slate-300">$5,000</td>
+                            <td class="p-5 text-emerald-400 font-bold">+$1,000</td>
+                            <td class="p-5 text-amber-400 font-bold">25.0%</td>
+                            <td class="p-5 text-slate-300">$10,000</td>
+                            <td class="p-5 text-amber-400 font-bold">150.0%</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/40 transition">
+                            <td class="p-5 font-bold text-emerald-400">Tier D</td>
+                            <td class="p-5 font-semibold text-white">$5,000</td>
+                            <td class="p-5 text-slate-300">$6,000</td>
+                            <td class="p-5 text-emerald-400 font-bold">+$1,000</td>
+                            <td class="p-5 text-amber-400 font-bold">20.0%</td>
+                            <td class="p-5 text-slate-300">$12,000</td>
+                            <td class="p-5 text-amber-400 font-bold">140.0%</td>
+                        </tr>
+                        <tr class="bg-[#121A33] font-bold">
+                            <td class="p-5 text-white">Average</td>
+                            <td class="p-5 text-white">$3,500</td>
+                            <td class="p-5 text-white">$4,500</td>
+                            <td class="p-5 text-emerald-400">+$1,000</td>
+                            <td class="p-5 text-amber-400">32.1%</td>
+                            <td class="p-5 text-white">$9,000</td>
+                            <td class="p-5 text-amber-400">164.2%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Schedule Comparison Section -->
+    <section id="comparison" class="py-24 bg-[#121A33] border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold tracking-widest text-emerald-400 uppercase mb-3">Schedule Comparison</h2>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-white">Choose Your Growth Path</h3>
+                <p class="text-slate-400 mt-4">Flexible horizons tailored to short-term yield or compounded capital expansion.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                <!-- Standard Schedule Card -->
+                <div class="bg-[#1C2541] p-8 sm:p-10 rounded-3xl border border-slate-800 relative flex flex-col justify-between">
+                    <div>
+                        <div class="inline-block px-3 py-1 rounded-lg bg-emerald-950 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-4">
+                            Standard Schedule
+                        </div>
+                        <h4 class="text-2xl font-black text-white mb-2">20-25 Days Payout</h4>
+                        <div class="text-4xl font-extrabold text-amber-400 mb-6">32.1% <span class="text-sm font-normal text-slate-400">Avg. ROI</span></div>
+                        <ul class="space-y-4 text-slate-300 text-sm mb-8">
+                            <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-3"></i> Fixed Net Profit: $1,000 across all tiers</li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-3"></i> Quick horizon delivery window (20-25 days)</li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-emerald-400 mr-3"></i> Entry Tier A ($2,000) yields 50.0% net return</li>
+                        </ul>
+                    </div>
+                    <a href="#register" class="w-full py-3.5 rounded-xl font-bold bg-[#0B132B] hover:bg-slate-800 border border-slate-700 text-white text-center transition">
+                        Select Standard Payout
+                    </a>
+                </div>
+
+                <!-- Double Payout Schedule Card -->
+                <div class="bg-[#1C2541] p-8 sm:p-10 rounded-3xl border-2 border-amber-500/50 relative flex flex-col justify-between shadow-xl shadow-amber-500/10">
+                    <div class="absolute -top-3.5 right-8 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 text-xs font-black uppercase px-3 py-1 rounded-full">
+                        High Yield x2
+                    </div>
+                    <div>
+                        <div class="inline-block px-3 py-1 rounded-lg bg-amber-950 text-amber-400 text-xs font-bold uppercase tracking-wider mb-4">
+                            Extended Schedule
+                        </div>
+                        <h4 class="text-2xl font-black text-white mb-2">Double Payout (x2)</h4>
+                        <div class="text-4xl font-extrabold text-amber-400 mb-6">164.2% <span class="text-sm font-normal text-slate-400">Avg. ROI</span></div>
+                        <ul class="space-y-4 text-slate-300 text-sm mb-8">
+                            <li class="flex items-center"><i class="fa-solid fa-check text-amber-400 mr-3"></i> High Yield Profit: $4,000 to $7,000 net profit</li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-amber-400 mr-3"></i> Compounded Horizon: Accelerated x2 return model</li>
+                            <li class="flex items-center"><i class="fa-solid fa-check text-amber-400 mr-3"></i> Entry Tier A ($2,000) yields 200.0% net return</li>
+                        </ul>
+                    </div>
+                    <a href="#register" class="w-full py-3.5 rounded-xl font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-center transition shadow-lg shadow-amber-500/20">
+                        Select Double Payout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Registration Requirements & Official Payment Channels -->
+    <section id="register" class="py-24 bg-[#0B132B]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold tracking-widest text-amber-400 uppercase mb-3">Get Started Today</h2>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-white">Registration & Official Channels</h3>
+                <p class="text-slate-400 mt-4">Secure your payout tier by submitting your sign-up details and transferring deposits through verified channels.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
+                <!-- Registration Requirements Card -->
+                <div class="bg-[#1C2541] p-8 sm:p-10 rounded-3xl border border-slate-800">
+                    <h4 class="text-xl font-bold text-white mb-6 flex items-center">
+                        <i class="fa-solid fa-user-check text-emerald-400 mr-3"></i> 1. Required Sign-Up Details
+                    </h4>
+                    <div class="space-y-6 text-slate-300 text-sm">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-950 text-emerald-400 font-bold flex items-center justify-center shrink-0">1</div>
+                            <div>
+                                <h5 class="font-bold text-white mb-1">Full Names</h5>
+                                <p class="text-slate-400 text-xs">As stated on official identity documents for verification.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-950 text-emerald-400 font-bold flex items-center justify-center shrink-0">2</div>
+                            <div>
+                                <h5 class="font-bold text-white mb-1">WhatsApp Number</h5>
+                                <p class="text-slate-400 text-xs">Primary contact channel for trade updates and confirmations.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-950 text-emerald-400 font-bold flex items-center justify-center shrink-0">3</div>
+                            <div>
+                                <h5 class="font-bold text-white mb-1">Remittance MoMo Details</h5>
+                                <p class="text-slate-400 text-xs">MoMo Number & Full Account Name for seamless payout remittance.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment & Contact Channels Card -->
+                <div class="bg-[#1C2541] p-8 sm:p-10 rounded-3xl border border-slate-800 flex flex-col justify-between">
+                    <div>
+                        <h4 class="text-xl font-bold text-white mb-6 flex items-center">
+                            <i class="fa-solid fa-shield-halved text-amber-400 mr-3"></i> 2. Official Payment Channels
+                        </h4>
+                        
+                        <div class="space-y-4">
+                            <!-- Paystack Link -->
+                            <a href="https://paystack.shop/pay/nlcyo5cl-v" target="_blank" class="block p-4 rounded-2xl bg-[#0B132B] border border-slate-700 hover:border-emerald-500 transition group">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center">
+                                        <i class="fa-solid fa-credit-card mr-2"></i> Paystack Gateway
+                                    </span>
+                                    <i class="fa-solid fa-external-link text-slate-500 group-hover:text-white transition"></i>
+                                </div>
+                                <div class="text-sm font-semibold text-white truncate">https://paystack.shop/pay/nlcyo5cl-v</div>
+                            </a>
+
+                            <!-- Telecel Payment Number -->
+                            <div class="p-4 rounded-2xl bg-[#0B132B] border border-slate-700">
+                                <div class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-1 flex items-center">
+                                    <i class="fa-solid fa-phone mr-2"></i> Telecel Payment Number
+                                </div>
+                                <div class="text-lg font-black text-white">0500353250</div>
+                                <div class="text-xs text-slate-400 mt-0.5">Account Name: <span class="text-white font-semibold">Justice Barnor</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- WhatsApp Inquiry Action -->
+                    <div class="mt-8">
+                        <a href="https://wa.me/message/D5B5Q7RX4DHDP1" target="_blank" class="w-full py-4 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-500 text-white text-center shadow-lg shadow-emerald-600/20 flex items-center justify-center transition">
+                            <i class="fa-brands fa-whatsapp text-xl mr-2"></i> Direct WhatsApp Inquiry
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#070D1F] border-t border-slate-800 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex items-center justify-center space-x-3 mb-6">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-600 to-amber-500 flex items-center justify-center font-bold text-white">
+                    🐼
+                </div>
+                <span class="text-lg font-black text-white tracking-wider">XIÓNGMÃO INVESTMENT PORTFOLIO</span>
+            </div>
+            <p class="text-xs text-slate-500 max-w-xl mx-auto mb-6">
+                Confidential investment proposal. Past performance and structured yields do not guarantee future results. Please invest responsibly within your risk tolerance.
+            </p>
+            <p class="text-xs text-slate-400">
+                &copy; 2026 XIÓNGMÃO Investment Portfolio. All rights reserved. Official Contact: 0500353250 (Justice Barnor).
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Interactive Logic -->
+    <script>
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Calculator State
+        let currentTierName = 'Tier A';
+        let currentInvestment = 2000;
+        let currentSchedule = 'standard'; // 'standard' or 'double'
+
+        const tierData = {
+            'A': { base: 2000, stdPayout: 3000, stdProfit: 1000, stdRoi: 50.0, dblPayout: 6000, dblProfit: 4000, dblRoi: 200.0 },
+            'B': { base: 3000, stdPayout: 4000, stdProfit: 1000, stdRoi: 33.3, dblPayout: 8000, dblProfit: 5000, dblRoi: 166.7 },
+            'C': { base: 4000, stdPayout: 5000, stdProfit: 1000, stdRoi: 25.0, dblPayout: 10000, dblProfit: 6000, dblRoi: 150.0 },
+            'D': { base: 5000, stdPayout: 6000, stdProfit: 1000, stdRoi: 20.0, dblPayout: 12000, dblProfit: 7000, dblRoi: 140.0 }
+        };
+
+        function setTier(tierKey, amount) {
+            currentTierName = `Tier ${tierKey}`;
+            currentInvestment = amount;
+            document.getElementById('custom-amount').value = amount;
+
+            // Update UI active buttons
+            document.querySelectorAll('.tier-btn').forEach(btn => {
+                btn.classList.remove('border-emerald-500', 'bg-emerald-950/40');
+                btn.classList.add('border-slate-700', 'bg-[#0B132B]');
+            });
+            const activeBtn = document.getElementById(`btn-tier-${tierKey}`);
+            if(activeBtn) {
+                activeBtn.classList.remove('border-slate-700', 'bg-[#0B132B]');
+                activeBtn.classList.add('border-emerald-500', 'bg-emerald-950/40');
+            }
+
+            updateCalculatorDisplay();
+        }
+
+        function calculateCustom() {
+            const val = parseFloat(document.getElementById('custom-amount').value) || 2000;
+            currentInvestment = val;
+            currentTierName = `Custom Investment ($${val.toLocaleString()})`;
+            
+            // Remove active tier styling
+            document.querySelectorAll('.tier-btn').forEach(btn => {
+                btn.classList.remove('border-emerald-500', 'bg-emerald-950/40');
+                btn.classList.add('border-slate-700', 'bg-[#0B132B]');
+            });
+
+            updateCalculatorDisplay();
+        }
+
+        function setSchedule(sch) {
+            currentSchedule = sch;
+            document.getElementById('btn-sch-standard').className = sch === 'standard' 
+                ? 'sch-btn px-4 py-3 rounded-xl border border-emerald-500 bg-emerald-950/40 font-bold text-center text-white transition'
+                : 'sch-btn px-4 py-3 rounded-xl border border-slate-700 bg-[#0B132B] font-bold text-center text-white transition';
+            
+            document.getElementById('btn-sch-double').className = sch === 'double' 
+                ? 'sch-btn px-4 py-3 rounded-xl border border-amber-500 bg-amber-950/40 font-bold text-center text-white transition'
+                : 'sch-btn px-4 py-3 rounded-xl border border-slate-700 bg-[#0B132B] font-bold text-center text-white transition';
+
+            updateCalculatorDisplay();
+        }
+
+        function updateCalculatorDisplay() {
+            document.getElementById('selected-tier-label').innerText = `${currentTierName} ($${currentInvestment.toLocaleString()} Investment)`;
+
+            let payout, profit, roi, timeHorizon;
+            
+            // Check if matches preset tier for exact table figures
+            let matchedKey = null;
+            for(let key in tierData) {
+                if(tierData[key].base === currentInvestment) {
+                    matchedKey = key;
+                    break;
+                }
+            }
+
+            if(matchedKey && currentSchedule === 'standard') {
+                payout = tierData[matchedKey].stdPayout;
+                profit = tierData[matchedKey].stdProfit;
+                roi = tierData[matchedKey].stdRoi.toFixed(1) + '%';
+                timeHorizon = '20-25 Days';
+            } else if(matchedKey && currentSchedule === 'double') {
+                payout = tierData[matchedKey].dblPayout;
+                profit = tierData[matchedKey].dblProfit;
+                roi = tierData[matchedKey].dblRoi.toFixed(1) + '%';
+                timeHorizon = 'Extended x2 Schedule';
+            } else {
+                // Custom math calculation
+                if(currentSchedule === 'standard') {
+                    profit = 1000 + (currentInvestment - 2000) * 0.25; // scaling model
+                    payout = currentInvestment + profit;
+                    roi = ((profit / currentInvestment) * 100).toFixed(1) + '%';
+                    timeHorizon = '20-25 Days';
+                } else {
+                    profit = currentInvestment * 2.0;
+                    payout = currentInvestment + profit;
+                    roi = '200.0%';
+                    timeHorizon = 'Extended x2 Schedule';
+                }
+            }
+
+            document.getElementById('calc-payout').innerText = `$${payout.toLocaleString()}`;
+            document.getElementById('calc-profit').innerText = `+$${profit.toLocaleString()}`;
+            document.getElementById('calc-roi').innerText = roi;
+            document.getElementById('calc-time').innerText = timeHorizon;
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            updateCalculatorDisplay();
+        };
+    </script>
+</body>
+</html>

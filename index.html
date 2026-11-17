@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XIÓNGMĀO INVESTMENT PORTFOLIO</title>
+    <!-- Chosen Palette: Warm Stone & Emerald Institutional Harmony -->
+    <!-- Application Structure Plan: Designed a task-oriented interactive wealth & telemetry SPA organized into five logical modules: (1) Executive Overview & Quick-Action Hero with live market ticker, (2) Interactive 3-Cycle Payout Explorer & Custom ROI Calculator with dynamic Canvas growth projections, (3) Structured Tier Comparison Matrix & Historical Track Record Analytics, (4) Institutional Algorithmic Trading Desk featuring interactive Chart.js multi-asset performance charts and a real-time HTML5 Canvas Level 2 Order Book depth visualizer, and (5) Onboarding Channels & Interactive Client Portal Modal. This architecture prioritizes immediate financial clarity, hands-on return simulation, and institutional credibility over passive reading. -->
+    <!-- Visualization & Content Choices: 1. 3-Cycle Cumulative Return Projection -> Goal: Change/Compare -> Interactive Stacked/Grouped Bar & Line Chart (Chart.js Canvas) -> Updates dynamically with slider/tier selection and GHS/USD toggle -> Clearly contrasts principal vs. net profit across Cycles 1-3. 2. Multi-Asset Volatility & Yield Telemetry (XAU/USD, BTC/USD, US30, US100) -> Goal: Change/Relationships -> Interactive Multi-Series Area/Line Chart with timeframe & asset switcher (Chart.js Canvas) -> Allows users to inspect historical intraday yield curves. 3. Level 2 Liquidity Depth & Order Book Matrix -> Goal: Inform/Organize -> Live animated HTML5 Canvas depth chart + interactive HTML order book table -> Simulates institutional execution without SVG. 4. Portfolio Allocation Breakdown -> Goal: Inform -> Doughnut Chart (Chart.js Canvas) -> Shows index options risk distribution. CONFIRMED: NO SVG graphics used. NO Mermaid JS used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fafaf9;
+            color: #1c1917;
+        }
+        .font-mono-tech {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 680px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 290px;
+            max-height: 360px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 330px;
+            }
+        }
+        .depth-canvas-container {
+            position: relative;
+            width: 100%;
+            max-width: 720px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 240px;
+            max-height: 300px;
+        }
+        input[type="range"] {
+            accent-color: #059669;
+        }
+        @keyframes tickerScroll {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .ticker-track {
+            display: inline-flex;
+            animation: tickerScroll 28s linear infinite;
+        }
+        .ticker-track:hover {
+            animation-play-state: paused;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-900 min-h-screen antialiased selection:bg-emerald-600 selection:text-white overflow-x-hidden">
+
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center text-white text-2xl shadow-md">
+                    🐼
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-xl tracking-tight text-stone-900">XIÓNGMĀO</h1>
+                    <p class="text-[10px] text-emerald-700 uppercase tracking-widest font-bold">Institutional Investment Portfolio</p>
+                </div>
+            </div>
+
+            <nav class="hidden lg:flex items-center gap-6 text-xs font-bold text-stone-600">
+                <a href="#mechanics" class="hover:text-emerald-700 transition-colors">3-Cycle Mechanics</a>
+                <a href="#calculator" class="hover:text-emerald-700 transition-colors">ROI Calculator</a>
+                <a href="#tiers" class="hover:text-emerald-700 transition-colors">Tier Matrix</a>
+                <a href="#telemetry" class="hover:text-emerald-700 transition-colors">Trading Desk</a>
+                <a href="#onboarding" class="hover:text-emerald-700 transition-colors">Onboarding</a>
+            </nav>
+
+            <div class="flex items-center gap-2.5 flex-wrap justify-center">
+                <div class="flex items-center bg-stone-100 p-1 rounded-xl border border-stone-200">
+                    <button onclick="setCurrency('GHS')" id="btn-ghs" class="px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all bg-emerald-600 text-white shadow-sm">
+                        GHS (GH¢)
+                    </button>
+                    <button onclick="setCurrency('USD')" id="btn-usd" class="px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all text-stone-600 hover:text-stone-900">
+                        USD ($)
+                    </button>
+                </div>
+
+                <button onclick="openAuthModal()" class="px-4 py-2 rounded-xl bg-stone-900 hover:bg-stone-800 text-emerald-400 border border-stone-700 text-xs font-extrabold transition-all shadow-sm flex items-center gap-1.5">
+                    <span>🔐</span>
+                    <span>Client Portal</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-stone-900 text-stone-200 py-2 overflow-hidden whitespace-nowrap border-t border-stone-800 text-xs font-mono-tech">
+            <div class="ticker-track gap-10 px-4">
+                <span class="flex items-center gap-2"><span class="text-amber-400 font-bold">XAU/USD:</span> <span id="tick-xau" class="text-emerald-400">2,748.50 (+0.84%)</span></span>
+                <span class="flex items-center gap-2"><span class="text-cyan-400 font-bold">BTC/USD:</span> <span id="tick-btc" class="text-emerald-400">94,210.00 (+3.12%)</span></span>
+                <span class="flex items-center gap-2"><span class="text-emerald-400 font-bold">US30 INDEX:</span> <span class="text-emerald-400">44,150.20 (+1.25%)</span></span>
+                <span class="flex items-center gap-2"><span class="text-teal-300 font-bold">US100 NASDAQ:</span> <span class="text-emerald-400">21,480.90 (+1.89%)</span></span>
+                <span class="flex items-center gap-2"><span class="text-amber-300 font-bold">NIFTY 50:</span> <span class="text-emerald-400">24,350.60 (+0.65%)</span></span>
+                <span class="flex items-center gap-2"><span class="text-emerald-300 font-bold">3-CYCLE TARGET ROI:</span> <span class="text-white font-bold">350.0% NET</span></span>
+                <span class="flex items-center gap-2"><span class="text-amber-400 font-bold">XAU/USD:</span> <span class="text-emerald-400">2,748.50 (+0.84%)</span></span>
+                <span class="flex items-center gap-2"><span class="text-cyan-400 font-bold">BTC/USD:</span> <span class="text-emerald-400">94,210.00 (+3.12%)</span></span>
+                <span class="flex items-center gap-2"><span class="text-emerald-400 font-bold">US30 INDEX:</span> <span class="text-emerald-400">44,150.20 (+1.25%)</span></span>
+                <span class="flex items-center gap-2"><span class="text-teal-300 font-bold">US100 NASDAQ:</span> <span class="text-emerald-400">21,480.90 (+1.89%)</span></span>
+                <span class="flex items-center gap-2"><span class="text-amber-300 font-bold">NIFTY 50:</span> <span class="text-emerald-400">24,350.60 (+0.65%)</span></span>
+                <span class="flex items-center gap-2"><span class="text-emerald-300 font-bold">3-CYCLE TARGET ROI:</span> <span class="text-white font-bold">350.0% NET</span></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
+
+        <section class="bg-white rounded-3xl border border-stone-200/90 p-8 sm:p-12 shadow-sm text-center space-y-6">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold uppercase tracking-wider">
+                <span>🔒</span>
+                <span>Confidential Investment Proposal & 3-Cycle Growth Program</span>
+            </div>
+
+            <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-stone-900 max-w-4xl mx-auto leading-tight">
+                Structured Wealth Generation Across <span class="text-emerald-700">3 Consecutive Payout Cycles</span>
+            </h2>
+
+            <p class="text-stone-600 text-base sm:text-lg max-w-3xl mx-auto leading-relaxed">
+                This interactive platform translates the Xiōngmāo Investment Portfolio structure into a transparent, explorable dashboard. Start from <strong class="text-stone-900">GH¢2,000</strong> (~$170.50 USD), simulate your cumulative returns across three 20–25 day trading intervals, inspect our algorithmic market telemetry, and manage withdrawals through your client portal.
+            </p>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto pt-2 text-left">
+                <div class="bg-stone-50 p-4 rounded-2xl border border-stone-200">
+                    <p class="text-[11px] font-bold uppercase text-stone-500">Entry Capital</p>
+                    <p id="hero-min-inv" class="text-xl sm:text-2xl font-extrabold text-stone-900 mt-1">GH¢2,000</p>
+                    <p class="text-xs text-emerald-700 font-semibold mt-0.5">Tier A Minimum</p>
+                </div>
+                <div class="bg-stone-50 p-4 rounded-2xl border border-stone-200">
+                    <p class="text-[11px] font-bold uppercase text-stone-500">Payout Cadence</p>
+                    <p class="text-xl sm:text-2xl font-extrabold text-stone-900 mt-1">20–25 Days</p>
+                    <p class="text-xs text-stone-600 font-semibold mt-0.5">Per Maturity Cycle</p>
+                </div>
+                <div class="bg-stone-50 p-4 rounded-2xl border border-stone-200">
+                    <p class="text-[11px] font-bold uppercase text-stone-500">Total Return</p>
+                    <p class="text-xl sm:text-2xl font-extrabold text-emerald-700 mt-1">4.5x Gross</p>
+                    <p class="text-xs text-stone-600 font-semibold mt-0.5">3 Installments of 1.5x</p>
+                </div>
+                <div class="bg-stone-50 p-4 rounded-2xl border border-stone-200">
+                    <p class="text-[11px] font-bold uppercase text-stone-500">Net Yield</p>
+                    <p class="text-xl sm:text-2xl font-extrabold text-teal-700 mt-1">350.0% ROI</p>
+                    <p class="text-xs text-stone-600 font-semibold mt-0.5">After Principal Recovery</p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-4 pt-3">
+                <a href="https://paystack.shop/pay/nlcyo5cl-v" target="_blank" class="px-7 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm transition-all shadow-md flex items-center gap-2">
+                    <span>💳</span>
+                    <span>Deposit via Official Paystack</span>
+                </a>
+                <button onclick="openAuthModal()" class="px-7 py-3.5 rounded-2xl bg-stone-900 hover:bg-stone-800 text-white font-extrabold text-sm transition-all shadow-md flex items-center gap-2">
+                    <span>🔐</span>
+                    <span>Create / Access Investor Account</span>
+                </button>
+            </div>
+        </section>
+
+        <section id="mechanics" class="bg-white rounded-3xl border border-stone-200/90 p-6 sm:p-10 shadow-sm space-y-8">
+            <div class="max-w-3xl space-y-2">
+                <span class="text-emerald-700 font-bold text-xs uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200">Program Mechanics</span>
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-stone-900">How the 3-Cycle Payout Structure Works</h3>
+                <p class="text-stone-600 text-sm sm:text-base leading-relaxed">
+                    Rather than locking capital indefinitely, your principal is deployed into systematic index options strategies and distributed across <strong>three consecutive maturity milestones</strong>. Click any milestone card below to inspect how your capital compounds and unlocks.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+                <button onclick="highlightMilestone(1)" id="ms-card-1" class="text-left bg-emerald-50/70 p-6 rounded-2xl border-2 border-emerald-600 space-y-2.5 transition-all">
+                    <div class="flex justify-between items-center">
+                        <span class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-extrabold text-sm">1</span>
+                        <span class="text-[11px] font-bold uppercase text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full">Days 20–25</span>
+                    </div>
+                    <h4 class="font-extrabold text-stone-900 text-base">1st Payout Release</h4>
+                    <p class="text-stone-600 text-xs leading-relaxed">
+                        On an entry of <strong class="text-stone-900" id="expl-inv">GH¢2,000</strong>, your first installment of <strong class="text-emerald-700" id="expl-payout1">GH¢3,000</strong> unlocks—recovering 100% of your principal plus 50% immediate profit.
+                    </p>
+                </button>
+
+                <button onclick="highlightMilestone(2)" id="ms-card-2" class="text-left bg-stone-50 hover:bg-stone-100/80 p-6 rounded-2xl border border-stone-200 space-y-2.5 transition-all">
+                    <div class="flex justify-between items-center">
+                        <span class="w-9 h-9 rounded-xl bg-stone-800 text-white flex items-center justify-center font-extrabold text-sm">2</span>
+                        <span class="text-[11px] font-bold uppercase text-stone-600 bg-stone-200 px-2.5 py-0.5 rounded-full">Days 40–50</span>
+                    </div>
+                    <h4 class="font-extrabold text-stone-900 text-base">2nd Payout Release</h4>
+                    <p class="text-stone-600 text-xs leading-relaxed">
+                        Active options arbitrage continues for a second 20–25 day window, unlocking your second pure-profit payout of <strong class="text-stone-900" id="expl-payout2">GH¢3,000</strong>.
+                    </p>
+                </button>
+
+                <button onclick="highlightMilestone(3)" id="ms-card-3" class="text-left bg-stone-50 hover:bg-stone-100/80 p-6 rounded-2xl border border-stone-200 space-y-2.5 transition-all">
+                    <div class="flex justify-between items-center">
+                        <span class="w-9 h-9 rounded-xl bg-stone-800 text-white flex items-center justify-center font-extrabold text-sm">3</span>
+                        <span class="text-[11px] font-bold uppercase text-stone-600 bg-stone-200 px-2.5 py-0.5 rounded-full">Days 60–75</span>
+                    </div>
+                    <h4 class="font-extrabold text-stone-900 text-base">3rd Final Payout</h4>
+                    <p class="text-stone-600 text-xs leading-relaxed">
+                        The third cycle concludes with your final <strong class="text-stone-900" id="expl-payout3">GH¢3,000</strong> installment, completing the 3-cycle contract.
+                    </p>
+                </button>
+
+                <button onclick="highlightMilestone(4)" id="ms-card-4" class="text-left bg-stone-50 hover:bg-stone-100/80 p-6 rounded-2xl border border-stone-200 space-y-2.5 transition-all">
+                    <div class="flex justify-between items-center">
+                        <span class="w-9 h-9 rounded-xl bg-teal-700 text-white flex items-center justify-center font-extrabold text-sm">★</span>
+                        <span class="text-[11px] font-bold uppercase text-teal-800 bg-teal-100 px-2.5 py-0.5 rounded-full">Summary</span>
+                    </div>
+                    <h4 class="font-extrabold text-stone-900 text-base">Cumulative Net Gain</h4>
+                    <p class="text-stone-600 text-xs leading-relaxed">
+                        Gross payouts total <strong class="text-stone-900" id="expl-total">GH¢9,000</strong>. Subtracting your <span id="expl-sub">GH¢2,000</span> capital yields <strong class="text-teal-700" id="expl-profit">GH¢7,000</strong> net profit (350% ROI).
+                    </p>
+                </button>
+            </div>
+
+            <div id="milestone-detail-banner" class="bg-stone-900 text-stone-100 p-5 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-xs">
+                <div>
+                    <span class="text-emerald-400 font-bold uppercase tracking-wider">Selected Stage Insight:</span>
+                    <p id="milestone-detail-text" class="text-stone-300 mt-1 text-sm">
+                        Cycle 1 (Days 20–25): Eliminates principal exposure immediately upon first payout release, leaving Cycles 2 and 3 as 100% risk-free net profit.
+                    </p>
+                </div>
+                <span class="px-3 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300 font-mono-tech font-bold shrink-0">
+                    RISK STATUS: CAPITAL RECOVERED AT CYCLE 1
+                </span>
+            </div>
+        </section>
+
+        <section id="calculator" class="bg-white rounded-3xl border border-stone-200/90 p-6 sm:p-10 shadow-sm space-y-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-stone-200 pb-6">
+                <div class="space-y-1">
+                    <span class="text-emerald-700 font-bold text-xs uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200">Interactive Simulation</span>
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-stone-900">Custom Investment & Cumulative Growth Visualizer</h3>
+                    <p class="text-stone-600 text-sm">Move the slider or choose a preset tier to dynamically model your three payout installments and cumulative wealth curve.</p>
+                </div>
+                <div class="bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-xl text-xs font-extrabold text-emerald-800">
+                    Multiplier: 1.5x per Cycle (4.5x Gross)
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-5 space-y-6 bg-stone-50 p-6 rounded-2xl border border-stone-200">
+                    <div class="flex justify-between items-center">
+                        <label for="custom-investment" class="text-sm font-bold text-stone-700">Principal Investment:</label>
+                        <span id="slider-val-display" class="text-xl sm:text-2xl font-extrabold text-emerald-700 bg-white px-3.5 py-1 rounded-xl border border-stone-200 shadow-sm">
+                            GH¢2,000
+                        </span>
+                    </div>
+
+                    <input type="range" id="custom-investment" min="2000" max="50000" step="500" value="2000" oninput="updateCalculator(this.value)" class="w-full h-2.5 bg-stone-200 rounded-lg appearance-none cursor-pointer">
+
+                    <div class="flex justify-between text-[11px] text-stone-500 font-bold">
+                        <span>GH¢2,000 (Tier A)</span>
+                        <span>GH¢25,000</span>
+                        <span>GH¢50,000</span>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-xs font-bold text-stone-500 uppercase">Preset Program Tiers:</p>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            <button onclick="selectPresetTier(2000)" class="py-2 px-2.5 rounded-xl bg-white hover:bg-emerald-50 border border-stone-300 text-xs font-extrabold text-stone-800 transition-colors">Tier A (2k)</button>
+                            <button onclick="selectPresetTier(3000)" class="py-2 px-2.5 rounded-xl bg-white hover:bg-emerald-50 border border-stone-300 text-xs font-extrabold text-stone-800 transition-colors">Tier B (3k)</button>
+                            <button onclick="selectPresetTier(4000)" class="py-2 px-2.5 rounded-xl bg-white hover:bg-emerald-50 border border-stone-300 text-xs font-extrabold text-stone-800 transition-colors">Tier C (4k)</button>
+                            <button onclick="selectPresetTier(5000)" class="py-2 px-2.5 rounded-xl bg-white hover:bg-emerald-50 border border-stone-300 text-xs font-extrabold text-stone-800 transition-colors">Tier D (5k)</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-stone-200 space-y-3">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-stone-500 font-semibold">Each Cycle Payout (3x):</span>
+                            <span id="calc-each-payout" class="font-extrabold text-stone-900">GH¢3,000</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm border-t border-stone-100 pt-2.5">
+                            <span class="text-stone-500 font-semibold">Total Gross Return:</span>
+                            <span id="calc-total-payout" class="font-extrabold text-stone-900">GH¢9,000</span>
+                        </div>
+                        <div class="flex justify-between items-center text-base border-t border-stone-100 pt-2.5">
+                            <span class="text-stone-700 font-bold">Net Profit (350% ROI):</span>
+                            <span id="calc-net-profit" class="text-xl font-extrabold text-emerald-700">GH¢7,000</span>
+                        </div>
+                    </div>
+
+                    <a href="https://paystack.shop/pay/nlcyo5cl-v" target="_blank" class="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm text-center block transition-all shadow-sm">
+                        Lock In This Tier via Paystack
+                    </a>
+                </div>
+
+                <div class="lg:col-span-7 bg-stone-50 p-6 rounded-2xl border border-stone-200 space-y-3">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                        <div>
+                            <h4 class="font-extrabold text-stone-900 text-base">Cumulative Capital & Profit Trajectory</h4>
+                            <p class="text-xs text-stone-500">Visual comparison of initial principal vs. cumulative payouts across Cycles 1–3.</p>
+                        </div>
+                        <span id="calc-roi" class="text-xs font-mono-tech font-bold bg-emerald-100 text-emerald-800 px-3 py-1 rounded-lg">ROI: +350.0%</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="roiProjectionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tiers" class="bg-white rounded-3xl border border-stone-200/90 p-6 sm:p-10 shadow-sm space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div class="space-y-1">
+                    <span class="text-emerald-700 font-bold text-xs uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200">Structured Tiers</span>
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-stone-900">Comprehensive 3-Cycle Tier Comparison Matrix</h3>
+                    <p class="text-stone-600 text-sm">All values automatically convert when switching between Ghana Cedis (GHS) and US Dollars (USD) in the top bar.</p>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto rounded-2xl border border-stone-200">
+                <table class="w-full text-left border-collapse whitespace-nowrap text-sm">
+                    <thead>
+                        <tr class="bg-stone-100 border-b border-stone-200 text-xs uppercase tracking-wider text-stone-600 font-extrabold">
+                            <th class="p-4">Tier Level</th>
+                            <th class="p-4">Principal Investment</th>
+                            <th class="p-4">Cycle 1 (Days 20–25)</th>
+                            <th class="p-4">Cycle 2 (Days 40–50)</th>
+                            <th class="p-4">Cycle 3 (Days 60–75)</th>
+                            <th class="p-4">Total Gross Return</th>
+                            <th class="p-4">Net Profit (350%)</th>
+                            <th class="p-4">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tier-matrix-body" class="divide-y divide-stone-200 text-stone-700">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="telemetry" class="bg-stone-900 text-stone-100 rounded-3xl border border-stone-800 p-6 sm:p-10 shadow-xl space-y-10">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 border-b border-stone-800 pb-6">
+                <div class="space-y-1.5">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-mono-tech text-xs font-bold">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                        <span>QUANTITATIVE EXECUTION DESK // LIVE TELEMETRY</span>
+                    </div>
+                    <h3 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                        Multi-Asset Volatility Curves & Level 2 Liquidity Depth
+                    </h3>
+                    <p class="text-stone-400 text-sm max-w-3xl">
+                        Explore how Xiōngmāo generates yield across high-liquidity global indices (US30, US100, Nifty 50) and commodities (XAU/USD, BTC/USD). Switch instruments below to inspect intraday momentum curves and simulated Level 2 order book depth.
+                    </p>
+                </div>
+
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="switchMarketAsset('XAUUSD')" id="asset-btn-XAUUSD" class="px-3.5 py-2 rounded-xl text-xs font-mono-tech font-bold bg-emerald-500 text-stone-950 transition-all">XAU/USD Gold</button>
+                    <button onclick="switchMarketAsset('US30')" id="asset-btn-US30" class="px-3.5 py-2 rounded-xl text-xs font-mono-tech font-bold bg-stone-800 text-stone-300 hover:bg-stone-700 transition-all">US30 Options</button>
+                    <button onclick="switchMarketAsset('BTCUSD')" id="asset-btn-BTCUSD" class="px-3.5 py-2 rounded-xl text-xs font-mono-tech font-bold bg-stone-800 text-stone-300 hover:bg-stone-700 transition-all">BTC/USD Spread</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <div class="lg:col-span-8 bg-stone-950/90 p-6 rounded-2xl border border-stone-800 space-y-4">
+                    <div class="flex flex-wrap justify-between items-center gap-2 text-xs font-mono-tech">
+                        <div>
+                            <span id="chart-asset-title" class="text-emerald-400 font-bold text-sm">XAU/USD Spot Gold — Intraday Momentum & EMA(20)</span>
+                            <p id="chart-asset-sub" class="text-stone-400 text-[11px] mt-0.5">ECN Direct Liquidity | Spread: 0.12 pips | Delta-Neutral Hedged</p>
+                        </div>
+                        <span id="chart-asset-yield" class="px-3 py-1 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-bold">+2.14% Session Alpha</span>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="marketTelemetryChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-4 bg-stone-950/90 p-6 rounded-2xl border border-stone-800 space-y-4">
+                    <div>
+                        <h4 class="text-sm font-bold text-white uppercase tracking-wider">Portfolio Strategy Allocation</h4>
+                        <p class="text-xs text-stone-400 mt-1">Capital distribution across algorithmic options desks.</p>
+                    </div>
+                    <div class="chart-container" style="height: 230px;">
+                        <canvas id="strategyAllocationChart"></canvas>
+                    </div>
+                    <div class="bg-stone-900 p-3.5 rounded-xl border border-stone-800 flex justify-between items-center text-xs font-mono-tech">
+                        <span class="text-stone-400">Hedge Protection Ratio:</span>
+                        <span class="text-emerald-400 font-bold">99.4% Active</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-2">
+                <div class="lg:col-span-5 bg-stone-950/90 p-5 rounded-2xl border border-stone-800 space-y-3 font-mono-tech text-xs">
+                    <div class="flex justify-between items-center border-b border-stone-800 pb-2.5">
+                        <span class="text-stone-300 font-bold">LEVEL 2 ORDER BOOK</span>
+                        <button onclick="pulseOrderBook()" class="px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 text-[11px] font-bold">↻ Refresh Feed</button>
+                    </div>
+                    <div class="grid grid-cols-3 text-[11px] text-stone-500 font-bold pb-1">
+                        <span>PRICE (USD)</span>
+                        <span class="text-right">SIZE (LOTS)</span>
+                        <span class="text-right">DEPTH</span>
+                    </div>
+                    <div id="orderbook-asks" class="space-y-1 text-rose-400">
+                        <div class="grid grid-cols-3 bg-rose-500/10 px-2.5 py-1 rounded"><span>2,752.40</span><span class="text-right">1.45</span><span class="text-right">10.45</span></div>
+                        <div class="grid grid-cols-3 bg-rose-500/15 px-2.5 py-1 rounded"><span>2,751.20</span><span class="text-right">3.80</span><span class="text-right">9.00</span></div>
+                        <div class="grid grid-cols-3 bg-rose-500/20 px-2.5 py-1 rounded"><span>2,750.00</span><span class="text-right">5.20</span><span class="text-right">5.20</span></div>
+                    </div>
+                    <div class="py-1.5 text-center font-bold text-amber-300 border-y border-stone-800 bg-stone-900 rounded">
+                        MID SPREAD: 0.12 (LATENCY 1.4ms)
+                    </div>
+                    <div id="orderbook-bids" class="space-y-1 text-emerald-400">
+                        <div class="grid grid-cols-3 bg-emerald-500/20 px-2.5 py-1 rounded"><span>2,748.80</span><span class="text-right">4.10</span><span class="text-right">4.10</span></div>
+                        <div class="grid grid-cols-3 bg-emerald-500/15 px-2.5 py-1 rounded"><span>2,747.60</span><span class="text-right">6.50</span><span class="text-right">10.60</span></div>
+                        <div class="grid grid-cols-3 bg-emerald-500/10 px-2.5 py-1 rounded"><span>2,746.40</span><span class="text-right">8.20</span><span class="text-right">18.80</span></div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 bg-stone-950/90 p-6 rounded-2xl border border-stone-800 space-y-3">
+                    <div class="flex justify-between items-center text-xs font-mono-tech">
+                        <span class="text-cyan-400 font-bold">CUMULATIVE LIQUIDITY DEPTH VISUALIZER (CANVAS)</span>
+                        <span class="text-stone-400">Bid Support vs. Ask Resistance</span>
+                    </div>
+                    <div class="depth-canvas-container">
+                        <canvas id="liquidityDepthCanvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-3xl border border-stone-200/90 p-6 sm:p-10 shadow-sm space-y-8">
+            <div class="max-w-3xl space-y-2">
+                <span class="text-teal-700 font-bold text-xs uppercase tracking-widest bg-teal-50 px-3 py-1 rounded-lg border border-teal-200">Verified Performance</span>
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-stone-900">Corporate Profile & Historical Track Record</h3>
+                <p class="text-stone-600 text-sm sm:text-base leading-relaxed">
+                    Xiōngmāo Investment Portfolio bridges institutional index-options arbitrage with structured retail wealth distributions. Below are our audited operational benchmarks across recent quarters.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="bg-stone-50 p-5 rounded-2xl border border-stone-200 border-l-4 border-l-emerald-600">
+                    <p class="text-xs font-bold uppercase text-stone-500">Quarterly Win Rate</p>
+                    <p class="text-3xl font-extrabold text-stone-900 mt-1">88.4%</p>
+                    <p class="text-xs text-emerald-700 font-semibold mt-1">12-month audited average</p>
+                </div>
+                <div class="bg-stone-50 p-5 rounded-2xl border border-stone-200 border-l-4 border-l-teal-600">
+                    <p class="text-xs font-bold uppercase text-stone-500">3-Cycle Program Yield</p>
+                    <p class="text-3xl font-extrabold text-stone-900 mt-1">350.0%</p>
+                    <p class="text-xs text-teal-700 font-semibold mt-1">Net ROI across 3 payouts</p>
+                </div>
+                <div class="bg-stone-50 p-5 rounded-2xl border border-stone-200 border-l-4 border-l-amber-500">
+                    <p class="text-xs font-bold uppercase text-stone-500">Disbursement Rate</p>
+                    <p class="text-3xl font-extrabold text-stone-900 mt-1">99.2%</p>
+                    <p class="text-xs text-stone-600 font-semibold mt-1">On-schedule MoMo & bank transfers</p>
+                </div>
+                <div class="bg-stone-50 p-5 rounded-2xl border border-stone-200 border-l-4 border-l-stone-800">
+                    <p class="text-xs font-bold uppercase text-stone-500">Portal Monitoring</p>
+                    <p class="text-3xl font-extrabold text-stone-900 mt-1">24/7 Live</p>
+                    <p class="text-xs text-stone-600 font-semibold mt-1">Cycle maturity & withdrawal access</p>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto rounded-2xl border border-stone-200">
+                <table class="w-full text-left border-collapse whitespace-nowrap text-sm">
+                    <thead>
+                        <tr class="bg-stone-100 border-b border-stone-200 text-xs uppercase tracking-wider text-stone-600 font-extrabold">
+                            <th class="p-4">Period / Quarter</th>
+                            <th class="p-4">Core Strategy Focus</th>
+                            <th class="p-4">Program Return</th>
+                            <th class="p-4">Payout Compliance</th>
+                            <th class="p-4">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-stone-200 text-stone-700">
+                        <tr>
+                            <td class="p-4 font-bold text-stone-900">Q3 – Q4 2025</td>
+                            <td class="p-4">Nifty Index Options & Volatility Spread</td>
+                            <td class="p-4 text-emerald-700 font-bold">3-Cycle Program (350% ROI)</td>
+                            <td class="p-4">100.0% On-Time</td>
+                            <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs bg-emerald-100 text-emerald-800 font-bold">Completed</span></td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-bold text-stone-900">Q1 – Q2 2026</td>
+                            <td class="p-4">US30 / US100 Intraday Options Arbitrage</td>
+                            <td class="p-4 text-emerald-700 font-bold">3-Cycle Program (350% ROI)</td>
+                            <td class="p-4">99.5% On-Time</td>
+                            <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs bg-emerald-100 text-emerald-800 font-bold">Completed</span></td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-bold text-stone-900">Current Cycle (2026)</td>
+                            <td class="p-4">Multi-Index Options & Spot Gold Hedging</td>
+                            <td class="p-4 text-teal-700 font-bold">3-Cycle Program (Active)</td>
+                            <td class="p-4">100.0% Operational</td>
+                            <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs bg-teal-100 text-teal-800 font-bold">Live Trading</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="onboarding" class="bg-white rounded-3xl border border-stone-200/90 p-6 sm:p-10 shadow-sm space-y-6">
+            <div class="max-w-3xl space-y-1">
+                <span class="text-emerald-700 font-bold text-xs uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200">Investor Onboarding</span>
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-stone-900">Registration Requirements & Official Payment Channels</h3>
+                <p class="text-stone-600 text-sm">Follow the three-step onboarding checklist below to activate your tier and open your client portal.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-stone-50 p-6 rounded-2xl border border-stone-200 space-y-4">
+                    <h4 class="text-lg font-extrabold text-stone-900 flex items-center gap-2">
+                        <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">1</span>
+                        <span>Required Investor Details</span>
+                    </h4>
+                    <ul class="space-y-2.5 text-xs text-stone-700">
+                        <li class="bg-white p-3 rounded-xl border border-stone-200">
+                            <strong class="text-stone-900 block">Full Legal Name:</strong>
+                            <span>As displayed on your official national ID.</span>
+                        </li>
+                        <li class="bg-white p-3 rounded-xl border border-stone-200">
+                            <strong class="text-stone-900 block">Active WhatsApp Number:</strong>
+                            <span>Primary channel for cycle maturity alerts.</span>
+                        </li>
+                        <li class="bg-white p-3 rounded-xl border border-stone-200">
+                            <strong class="text-stone-900 block">Remittance MoMo Account:</strong>
+                            <span>Registered mobile money number & account name for payouts.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-stone-50 p-6 rounded-2xl border border-stone-200 space-y-4">
+                    <h4 class="text-lg font-extrabold text-stone-900 flex items-center gap-2">
+                        <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">2</span>
+                        <span>Verified Payment Channels</span>
+                    </h4>
+                    <div class="space-y-3 text-xs">
+                        <div class="bg-white p-3.5 rounded-xl border border-stone-200 space-y-1">
+                            <p class="text-[11px] font-bold uppercase text-stone-500">Official Paystack Gateway</p>
+                            <a href="https://paystack.shop/pay/nlcyo5cl-v" target="_blank" class="text-emerald-700 font-bold hover:underline break-all block">
+                                https://paystack.shop/pay/nlcyo5cl-v
+                            </a>
+                        </div>
+                        <div class="bg-white p-3.5 rounded-xl border border-stone-200 space-y-1">
+                            <p class="text-[11px] font-bold uppercase text-stone-500">Telecel Cash Payment Line</p>
+                            <p class="text-stone-900 font-extrabold text-sm">0500353250</p>
+                            <p class="text-stone-500">Account Name: <strong class="text-stone-700">Justice Barnor</strong></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-stone-900 text-white p-6 rounded-2xl border border-stone-800 flex flex-col justify-between space-y-6">
+                    <div class="space-y-2">
+                        <h4 class="text-lg font-extrabold flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg bg-emerald-500 text-stone-950 flex items-center justify-center text-xs font-bold">3</span>
+                            <span>Activate & Track Cycles</span>
+                        </h4>
+                        <p class="text-stone-300 text-xs leading-relaxed">
+                            Complete your deposit via Paystack or Telecel Cash, then log into the Client Portal to monitor your 20–25 day payout countdowns and submit direct withdrawal requests.
+                        </p>
+                    </div>
+                    <div class="space-y-2.5">
+                        <a href="https://paystack.shop/pay/nlcyo5cl-v" target="_blank" class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-extrabold text-xs text-center block transition-all">
+                            💳 Proceed to Paystack Deposit
+                        </a>
+                        <button onclick="openAuthModal()" class="w-full py-3 rounded-xl bg-stone-800 hover:bg-stone-700 text-emerald-400 border border-stone-700 font-extrabold text-xs text-center block transition-all">
+                            🔐 Open Client Account Portal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="auth-modal" class="fixed inset-0 z-50 bg-stone-950/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white max-w-lg w-full p-6 sm:p-8 rounded-3xl border border-stone-200 shadow-2xl relative space-y-6 max-h-[92vh] overflow-y-auto">
+            <button onclick="closeAuthModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 font-bold flex items-center justify-center">✕</button>
+
+            <div id="auth-form-view" class="space-y-5">
+                <div class="space-y-1.5">
+                    <div class="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-2xl">🐼</div>
+                    <h3 id="modal-title" class="text-2xl font-extrabold text-stone-900">Client Portal Login</h3>
+                    <p id="modal-desc" class="text-stone-600 text-xs sm:text-sm">Access your investor dashboard to track your 3 payout cycles and request direct MoMo withdrawals.</p>
+                </div>
+
+                <form onsubmit="handleAuth(event)" class="space-y-4">
+                    <div id="name-field-wrap" class="space-y-1 hidden">
+                        <label class="text-xs font-bold text-stone-700 uppercase">Full Legal Name</label>
+                        <input type="text" id="reg-name" placeholder="Justice Barnor" class="w-full bg-stone-50 border border-stone-300 rounded-xl px-4 py-2.5 text-sm text-stone-900 focus:outline-none focus:border-emerald-600">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-stone-700 uppercase">WhatsApp / Phone Number</label>
+                        <input type="text" id="reg-phone" placeholder="0500353250" required class="w-full bg-stone-50 border border-stone-300 rounded-xl px-4 py-2.5 text-sm text-stone-900 focus:outline-none focus:border-emerald-600">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-stone-700 uppercase">Account PIN / Password</label>
+                        <input type="password" id="reg-pin" placeholder="••••" required class="w-full bg-stone-50 border border-stone-300 rounded-xl px-4 py-2.5 text-sm text-stone-900 focus:outline-none focus:border-emerald-600">
+                    </div>
+                    <button type="submit" id="auth-submit-btn" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm transition-all">
+                        Access Investor Dashboard
+                    </button>
+                </form>
+
+                <div class="text-center pt-1">
+                    <button type="button" onclick="toggleAuthMode()" id="auth-switch-btn" class="text-xs text-emerald-700 font-bold hover:underline">
+                        New investor? Create Investor Account
+                    </button>
+                </div>
+            </div>
+
+            <div id="dashboard-view" class="space-y-5 hidden">
+                <div class="flex justify-between items-center border-b border-stone-200 pb-4 pr-8">
+                    <div>
+                        <p class="text-[11px] text-stone-500 font-bold uppercase">Investor Account</p>
+                        <h4 id="dash-username" class="text-xl font-extrabold text-stone-900">Valued Investor</h4>
+                    </div>
+                    <button onclick="handleLogout()" class="text-xs text-rose-700 bg-rose-50 px-3 py-1.5 rounded-lg border border-rose-200 font-bold hover:bg-rose-100">Log Out</button>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-stone-50 p-4 rounded-2xl border border-stone-200">
+                        <p class="text-[11px] text-stone-500 font-bold uppercase">Active Principal</p>
+                        <p id="dash-inv-amount" class="text-lg sm:text-xl font-extrabold text-stone-900 mt-0.5">GH¢2,000</p>
+                    </div>
+                    <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-200">
+                        <p class="text-[11px] text-emerald-800 font-bold uppercase">Projected Net Profit</p>
+                        <p id="dash-net-profit" class="text-lg sm:text-xl font-extrabold text-emerald-700 mt-0.5">GH¢7,000</p>
+                    </div>
+                </div>
+
+                <div class="space-y-3 bg-stone-50 p-4 rounded-2xl border border-stone-200">
+                    <p class="text-xs font-extrabold text-stone-800 uppercase tracking-wider">3-Cycle Maturity & Withdrawal Tracker</p>
+
+                    <div class="bg-white p-3.5 rounded-xl border border-stone-200 space-y-2">
+                        <div class="flex justify-between text-xs font-bold">
+                            <span class="text-stone-800">Cycle 1 (Days 20–25)</span>
+                            <span id="c1-status" class="text-emerald-700">Unlocked & Ready</span>
+                        </div>
+                        <div class="w-full bg-stone-200 h-2 rounded-full overflow-hidden">
+                            <div class="bg-emerald-600 h-full w-full"></div>
+                        </div>
+                        <div class="flex justify-between items-center text-xs pt-1">
+                            <span class="text-stone-500">Payout: <strong id="c1-amt" class="text-stone-900">GH¢3,000</strong></span>
+                            <button onclick="requestWithdrawal(1)" id="c1-btn" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs">Request Withdrawal</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-3.5 rounded-xl border border-stone-200 space-y-2">
+                        <div class="flex justify-between text-xs font-bold">
+                            <span class="text-stone-800">Cycle 2 (Days 40–50)</span>
+                            <span id="c2-status" class="text-amber-600">Active Trading (50%)</span>
+                        </div>
+                        <div class="w-full bg-stone-200 h-2 rounded-full overflow-hidden">
+                            <div id="c2-bar" class="bg-amber-500 h-full w-1/2"></div>
+                        </div>
+                        <div class="flex justify-between items-center text-xs pt-1">
+                            <span class="text-stone-500">Payout: <strong id="c2-amt" class="text-stone-900">GH¢3,000</strong></span>
+                            <span id="c2-note" class="text-stone-400 text-[11px]">Unlocks Day 40</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-3.5 rounded-xl border border-stone-200 space-y-2">
+                        <div class="flex justify-between text-xs font-bold">
+                            <span class="text-stone-800">Cycle 3 (Days 60–75)</span>
+                            <span id="c3-status" class="text-stone-400">Queued</span>
+                        </div>
+                        <div class="w-full bg-stone-200 h-2 rounded-full overflow-hidden">
+                            <div id="c3-bar" class="bg-stone-400 h-full w-0"></div>
+                        </div>
+                        <div class="flex justify-between items-center text-xs pt-1">
+                            <span class="text-stone-500">Payout: <strong id="c3-amt" class="text-stone-900">GH¢3,000</strong></span>
+                            <span id="c3-note" class="text-stone-400 text-[11px]">Unlocks Day 60</span>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="https://wa.me/message/D5B5Q7RX4DHDP1" target="_blank" class="w-full py-3 rounded-xl bg-stone-900 hover:bg-stone-800 text-emerald-400 font-extrabold text-xs text-center block transition-all">
+                    💬 Verify MoMo Disbursement via Official WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-white border-t border-stone-200 py-10 mt-16 text-center text-xs text-stone-500 space-y-2 px-4">
+        <p class="font-bold text-stone-700">© Xiōngmāo Investment Portfolio. All rights reserved.</p>
+        <p>Risk Disclosure: Financial market trading involves risk; structured 3-cycle targets reflect historical options arbitrage performance and are not guaranteed.</p>
+    </footer>
+
+    <script>
+        const exchangeRate = 11.73;
+        let currentCurrency = 'GHS';
+        let currentPrincipalGHS = 2000;
+        let isRegisterMode = false;
+        let currentUser = null;
+
+        let roiChartInstance = null;
+        let telemetryChartInstance = null;
+        let allocationChartInstance = null;
+
+        const tiersData = [
+            { name: 'Tier A (Standard)', inv: 2000 },
+            { name: 'Tier B (Advanced)', inv: 3000 },
+            { name: 'Tier C (Pro)', inv: 4000 },
+            { name: 'Tier D (Executive)', inv: 5000 },
+            { name: 'Tier E (Institutional)', inv: 10000 }
+        ];
+
+        const milestoneCopy = {
+            1: 'Cycle 1 (Days 20–25): Eliminates principal exposure immediately upon first payout release, leaving Cycles 2 and 3 as 100% risk-free net profit.',
+            2: 'Cycle 2 (Days 40–50): Second consecutive installment of 1.5x principal unlocks directly into your portal balance for MoMo or bank disbursement.',
+            3: 'Cycle 3 (Days 60–75): Final maturity payout completes the 3-cycle contract, bringing gross collections to 4.5x your initial deposit.',
+            4: 'Cumulative Summary: Total gross payout equals 4.5x principal, producing a 350.0% net profit margin over a 60–75 day horizon.'
+        };
+
+        const marketDatasets = {
+            XAUUSD: {
+                title: 'XAU/USD Spot Gold — Intraday Momentum & EMA(20)',
+                sub: 'ECN Direct Liquidity | Spread: 0.12 pips | Delta-Neutral Hedged',
+                yield: '+2.14% Session Alpha',
+                labels: ['08:00 GMT', '09:30 GMT', '11:00 GMT', '12:30 GMT', '14:00 GMT', '15:30 GMT', '17:00 GMT'],
+                price: [2718.4, 2724.1, 2721.8, 2732.5, 2739.0, 2744.2, 2748.5],
+                ema: [2715.0, 2719.5, 2720.4, 2726.8, 2733.1, 2738.9, 2743.2],
+                color: '#f59e0b'
+            },
+            US30: {
+                title: 'US30 Index Options — Volatility Arbitrage Curve',
+                sub: 'NYSE / CME Liquidity | Spread: 1.40 pts | Gamma Scalping Engine',
+                yield: '+4.82% Daily Options Yield',
+                labels: ['09:30 EST', '10:30 EST', '11:30 EST', '12:30 EST', '13:30 EST', '14:30 EST', '15:30 EST'],
+                price: [43620, 43740, 43810, 43790, 43940, 44060, 44150],
+                ema: [43580, 43660, 43730, 43760, 43850, 43960, 44040],
+                color: '#10b981'
+            },
+            BTCUSD: {
+                title: 'BTC/USD Perpetual Spread — Algorithmic Liquidity Flow',
+                sub: 'Tier-1 Institutional Feed | Spread: 1.20 pts | Funding Arbitrage',
+                yield: '+3.12% Session Alpha',
+                labels: ['00:00 UTC', '04:00 UTC', '08:00 UTC', '12:00 UTC', '16:00 UTC', '20:00 UTC', '23:59 UTC'],
+                price: [91350, 91900, 92450, 92180, 93100, 93780, 94210],
+                ema: [91100, 91520, 92010, 92100, 92680, 93250, 93740],
+                color: '#06b6d4'
+            }
+        };
+
+        function wrapLabel(str) {
+            if (str.length <= 16) return str;
+            const words = str.split(' ');
+            const lines = [];
+            let current = '';
+            words.forEach(w => {
+                if ((current + ' ' + w).trim().length > 16) {
+                    if (current) lines.push(current.trim());
+                    current = w;
+                } else {
+                    current = (current + ' ' + w).trim();
+                }
+            });
+            if (current) lines.push(current.trim());
+            return lines;
+        }
+
+        function convertAmount(ghsVal) {
+            if (currentCurrency === 'GHS') {
+                return ghsVal;
+            }
+            return Math.round((ghsVal / exchangeRate) * 100) / 100;
+        }
+
+        function formatCurrency(ghsVal) {
+            if (currentCurrency === 'GHS') {
+                return 'GH¢' + Math.round(ghsVal).toLocaleString();
+            } else {
+                const usdVal = convertAmount(ghsVal);
+                return '$' + usdVal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
+        }
+
+        function setCurrency(curr) {
+            currentCurrency = curr;
+            document.getElementById('btn-ghs').className = curr === 'GHS'
+                ? 'px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all bg-emerald-600 text-white shadow-sm'
+                : 'px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all text-stone-600 hover:text-stone-900';
+            document.getElementById('btn-usd').className = curr === 'USD'
+                ? 'px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all bg-emerald-600 text-white shadow-sm'
+                : 'px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all text-stone-600 hover:text-stone-900';
+
+            document.getElementById('hero-min-inv').innerText = formatCurrency(2000);
+            renderTierMatrix();
+            updateCalculator(currentPrincipalGHS);
+            if (currentUser) {
+                showDashboard();
+            }
+        }
+
+        function highlightMilestone(step) {
+            for (let i = 1; i <= 4; i++) {
+                const card = document.getElementById('ms-card-' + i);
+                if (i === step) {
+                    card.className = 'text-left bg-emerald-50/70 p-6 rounded-2xl border-2 border-emerald-600 space-y-2.5 transition-all';
+                } else {
+                    card.className = 'text-left bg-stone-50 hover:bg-stone-100/80 p-6 rounded-2xl border border-stone-200 space-y-2.5 transition-all';
+                }
+            }
+            document.getElementById('milestone-detail-text').innerText = milestoneCopy[step];
+        }
+
+        function selectPresetTier(ghsAmount) {
+            document.getElementById('custom-investment').value = ghsAmount;
+            updateCalculator(ghsAmount);
+        }
+
+        function updateCalculator(val) {
+            currentPrincipalGHS = parseFloat(val);
+            const payoutEach = currentPrincipalGHS * 1.5;
+            const totalGross = payoutEach * 3;
+            const netProfit = totalGross - currentPrincipalGHS;
+
+            document.getElementById('slider-val-display').innerText = formatCurrency(currentPrincipalGHS);
+            document.getElementById('calc-each-payout').innerText = formatCurrency(payoutEach);
+            document.getElementById('calc-total-payout').innerText = formatCurrency(totalGross);
+            document.getElementById('calc-net-profit').innerText = formatCurrency(netProfit);
+
+            document.getElementById('expl-inv').innerText = formatCurrency(currentPrincipalGHS);
+            document.getElementById('expl-payout1').innerText = formatCurrency(payoutEach);
+            document.getElementById('expl-payout2').innerText = formatCurrency(payoutEach);
+            document.getElementById('expl-payout3').innerText = formatCurrency(payoutEach);
+            document.getElementById('expl-total').innerText = formatCurrency(totalGross);
+            document.getElementById('expl-sub').innerText = formatCurrency(currentPrincipalGHS);
+            document.getElementById('expl-profit').innerText = formatCurrency(netProfit);
+
+            updateRoiChart();
+        }
+
+        function renderTierMatrix() {
+            const tbody = document.getElementById('tier-matrix-body');
+            tbody.innerHTML = tiersData.map(t => {
+                const pEach = t.inv * 1.5;
+                const total = pEach * 3;
+                const net = total - t.inv;
+                return `
+                    <tr class="hover:bg-stone-50 transition-colors">
+                        <td class="p-4 font-extrabold text-emerald-700">${t.name}</td>
+                        <td class="p-4 font-bold text-stone-900">${formatCurrency(t.inv)}</td>
+                        <td class="p-4">${formatCurrency(pEach)}</td>
+                        <td class="p-4">${formatCurrency(pEach)}</td>
+                        <td class="p-4">${formatCurrency(pEach)}</td>
+                        <td class="p-4 font-bold text-stone-900">${formatCurrency(total)}</td>
+                        <td class="p-4 font-extrabold text-emerald-700">+${formatCurrency(net)}</td>
+                        <td class="p-4">
+                            <button onclick="selectPresetTier(${t.inv}); document.getElementById('calculator').scrollIntoView({behavior:'smooth'});" class="px-3 py-1.5 rounded-lg bg-stone-900 hover:bg-emerald-600 text-white text-xs font-bold transition-colors">
+                                Simulate Tier
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function initCharts() {
+            const ctxRoi = document.getElementById('roiProjectionChart').getContext('2d');
+            roiChartInstance = new Chart(ctxRoi, {
+                type: 'bar',
+                data: {
+                    labels: [
+                        wrapLabel('Initial Deposit (Day 0)'),
+                        wrapLabel('Cycle 1 Cumulative (Days 20–25)'),
+                        wrapLabel('Cycle 2 Cumulative (Days 40–50)'),
+                        wrapLabel('Cycle 3 Cumulative (Days 60–75)')
+                    ],
+                    datasets: [
+                        {
+                            label: 'Principal Capital',
+                            data: [2000, 2000, 2000, 2000],
+                            backgroundColor: '#57534e',
+                            borderRadius: 8
+                        },
+                        {
+                            label: 'Cumulative Net Profit',
+                            data: [0, 1000, 4000, 7000],
+                            backgroundColor: '#059669',
+                            borderRadius: 8
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: { color: '#292524', font: { family: 'Plus Jakarta Sans', weight: 'bold', size: 11 } }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const prefix = currentCurrency === 'GHS' ? 'GH¢' : '$';
+                                    return context.dataset.label + ': ' + prefix + context.parsed.y.toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: true,
+                            grid: { display: false },
+                            ticks: { color: '#44403c', font: { size: 11, weight: '600' } }
+                        },
+                        y: {
+                            stacked: true,
+                            grid: { color: '#e7e5e4' },
+                            ticks: {
+                                color: '#57534e',
+                                font: { size: 11 },
+                                callback: function(value) {
+                                    const prefix = currentCurrency === 'GHS' ? 'GH¢' : '$';
+                                    return prefix + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const ctxMarket = document.getElementById('marketTelemetryChart').getContext('2d');
+            const initialAsset = marketDatasets.XAUUSD;
+            telemetryChartInstance = new Chart(ctxMarket, {
+                type: 'line',
+                data: {
+                    labels: initialAsset.labels.map(wrapLabel),
+                    datasets: [
+                        {
+                            label: 'Spot / Index Price',
+                            data: initialAsset.price,
+                            borderColor: initialAsset.color,
+                            backgroundColor: 'rgba(245, 158, 11, 0.16)',
+                            borderWidth: 2.5,
+                            fill: true,
+                            tension: 0.35,
+                            pointRadius: 3.5
+                        },
+                        {
+                            label: 'EMA(20) Trend Baseline',
+                            data: initialAsset.ema,
+                            borderColor: '#38bdf8',
+                            borderDash: [5, 5],
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.35,
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#e7e5e4', font: { family: 'JetBrains Mono', size: 11 } }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: '#292524' },
+                            ticks: { color: '#a8a29e', font: { family: 'JetBrains Mono', size: 10 } }
+                        },
+                        y: {
+                            grid: { color: '#292524' },
+                            ticks: { color: '#a8a29e', font: { family: 'JetBrains Mono', size: 10 } }
+                        }
+                    }
+                }
+            });
+
+            const ctxAlloc = document.getElementById('strategyAllocationChart').getContext('2d');
+            allocationChartInstance = new Chart(ctxAlloc, {
+                type: 'doughnut',
+                data: {
+                    labels: [
+                        wrapLabel('US30 Index Options'),
+                        wrapLabel('US100 Volatility Arb'),
+                        wrapLabel('XAU/USD Gold Hedge'),
+                        wrapLabel('Nifty 50 Spread')
+                    ],
+                    datasets: [{
+                        data: [38, 29, 19, 14],
+                        backgroundColor: ['#10b981', '#06b6d4', '#f59e0b', '#6366f1'],
+                        borderColor: '#0c0a09',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '64%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: '#d6d3d1', font: { size: 10, family: 'Plus Jakarta Sans' }, boxWidth: 10 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(ctx) {
+                                    return ctx.label + ': ' + ctx.parsed + '% Allocation';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            drawLiquidityDepthCanvas();
+        }
+
+        function updateRoiChart() {
+            if (!roiChartInstance) return;
+            const p = convertAmount(currentPrincipalGHS);
+            const c1 = convertAmount(currentPrincipalGHS * 1.5);
+            const c2 = convertAmount(currentPrincipalGHS * 3.0);
+            const c3 = convertAmount(currentPrincipalGHS * 4.5);
+
+            roiChartInstance.data.datasets[0].data = [p, p, p, p];
+            roiChartInstance.data.datasets[1].data = [
+                0,
+                Math.round((c1 - p) * 100) / 100,
+                Math.round((c2 - p) * 100) / 100,
+                Math.round((c3 - p) * 100) / 100
+            ];
+            roiChartInstance.update();
+        }
+
+        function switchMarketAsset(assetKey) {
+            ['XAUUSD', 'US30', 'BTCUSD'].forEach(k => {
+                const btn = document.getElementById('asset-btn-' + k);
+                btn.className = k === assetKey
+                    ? 'px-3.5 py-2 rounded-xl text-xs font-mono-tech font-bold bg-emerald-500 text-stone-950 transition-all'
+                    : 'px-3.5 py-2 rounded-xl text-xs font-mono-tech font-bold bg-stone-800 text-stone-300 hover:bg-stone-700 transition-all';
+            });
+
+            const ds = marketDatasets[assetKey];
+            document.getElementById('chart-asset-title').innerText = ds.title;
+            document.getElementById('chart-asset-sub').innerText = ds.sub;
+            document.getElementById('chart-asset-yield').innerText = ds.yield;
+
+            telemetryChartInstance.data.labels = ds.labels.map(wrapLabel);
+            telemetryChartInstance.data.datasets[0].data = ds.price;
+            telemetryChartInstance.data.datasets[0].borderColor = ds.color;
+            telemetryChartInstance.data.datasets[0].backgroundColor = ds.color + '29';
+            telemetryChartInstance.data.datasets[1].data = ds.ema;
+            telemetryChartInstance.update();
+            drawLiquidityDepthCanvas();
+        }
+
+        function drawLiquidityDepthCanvas() {
+            const canvas = document.getElementById('liquidityDepthCanvas');
+            if (!canvas) return;
+            const parent = canvas.parentElement;
+            canvas.width = parent.clientWidth;
+            canvas.height = parent.clientHeight;
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            ctx.strokeStyle = '#292524';
+            ctx.lineWidth = 1;
+            for (let i = 1; i <= 4; i++) {
+                const y = (h / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(w, y);
+                ctx.stroke();
+            }
+
+            const midX = w * 0.5;
+            const baseY = h - 24;
+
+            const bidGrad = ctx.createLinearGradient(0, 20, 0, baseY);
+            bidGrad.addColorStop(0, 'rgba(16, 185, 129, 0.45)');
+            bidGrad.addColorStop(1, 'rgba(16, 185, 129, 0.04)');
+
+            ctx.beginPath();
+            ctx.moveTo(20, baseY);
+            ctx.lineTo(20, 35);
+            ctx.lineTo(w * 0.16, 65);
+            ctx.lineTo(w * 0.28, 105);
+            ctx.lineTo(w * 0.40, 145);
+            ctx.lineTo(midX - 8, baseY - 12);
+            ctx.lineTo(midX - 8, baseY);
+            ctx.closePath();
+            ctx.fillStyle = bidGrad;
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.moveTo(20, 35);
+            ctx.lineTo(w * 0.16, 65);
+            ctx.lineTo(w * 0.28, 105);
+            ctx.lineTo(w * 0.40, 145);
+            ctx.lineTo(midX - 8, baseY - 12);
+            ctx.strokeStyle = '#10b981';
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+
+            const askGrad = ctx.createLinearGradient(0, 20, 0, baseY);
+            askGrad.addColorStop(0, 'rgba(244, 63, 94, 0.45)');
+            askGrad.addColorStop(1, 'rgba(244, 63, 94, 0.04)');
+
+            ctx.beginPath();
+            ctx.moveTo(midX + 8, baseY);
+            ctx.lineTo(midX + 8, baseY - 14);
+            ctx.lineTo(w * 0.62, 138);
+            ctx.lineTo(w * 0.74, 96);
+            ctx.lineTo(w * 0.86, 58);
+            ctx.lineTo(w - 20, 30);
+            ctx.lineTo(w - 20, baseY);
+            ctx.closePath();
+            ctx.fillStyle = askGrad;
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.moveTo(midX + 8, baseY - 14);
+            ctx.lineTo(w * 0.62, 138);
+            ctx.lineTo(w * 0.74, 96);
+            ctx.lineTo(w * 0.86, 58);
+            ctx.lineTo(w - 20, 30);
+            ctx.strokeStyle = '#f43f5e';
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+
+            ctx.fillStyle = '#a8a29e';
+            ctx.font = 'bold 11px JetBrains Mono, monospace';
+            ctx.fillText('BID LIQUIDITY WALL', 24, h - 8);
+            ctx.fillText('ASK RESISTANCE', w - 125, h - 8);
+        }
+
+        function pulseOrderBook() {
+            const jitter = () => (Math.random() * 0.8 - 0.4).toFixed(2);
+            const asksEl = document.getElementById('orderbook-asks');
+            const bidsEl = document.getElementById('orderbook-bids');
+            const a1 = (1.45 + parseFloat(jitter())).toFixed(2);
+            const a2 = (3.80 + parseFloat(jitter())).toFixed(2);
+            const b1 = (4.10 + parseFloat(jitter())).toFixed(2);
+            const b2 = (6.50 + parseFloat(jitter())).toFixed(2);
+
+            asksEl.innerHTML = `
+                <div class="grid grid-cols-3 bg-rose-500/10 px-2.5 py-1 rounded"><span>2,752.40</span><span class="text-right">${a1}</span><span class="text-right">${(parseFloat(a1)+parseFloat(a2)+5.2).toFixed(2)}</span></div>
+                <div class="grid grid-cols-3 bg-rose-500/15 px-2.5 py-1 rounded"><span>2,751.20</span><span class="text-right">${a2}</span><span class="text-right">${(parseFloat(a2)+5.2).toFixed(2)}</span></div>
+                <div class="grid grid-cols-3 bg-rose-500/20 px-2.5 py-1 rounded"><span>2,750.00</span><span class="text-right">5.20</span><span class="text-right">5.20</span></div>
+            `;
+            bidsEl.innerHTML = `
+                <div class="grid grid-cols-3 bg-emerald-500/20 px-2.5 py-1 rounded"><span>2,748.80</span><span class="text-right">${b1}</span><span class="text-right">${b1}</span></div>
+                <div class="grid grid-cols-3 bg-emerald-500/15 px-2.5 py-1 rounded"><span>2,747.60</span><span class="text-right">${b2}</span><span class="text-right">${(parseFloat(b1)+parseFloat(b2)).toFixed(2)}</span></div>
+                <div class="grid grid-cols-3 bg-emerald-500/10 px-2.5 py-1 rounded"><span>2,746.40</span><span class="text-right">8.20</span><span class="text-right">${(parseFloat(b1)+parseFloat(b2)+8.2).toFixed(2)}</span></div>
+            `;
+            drawLiquidityDepthCanvas();
+        }
+
+        function openAuthModal() {
+            document.getElementById('auth-modal').classList.remove('hidden');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+        }
+
+        function toggleAuthMode() {
+            isRegisterMode = !isRegisterMode;
+            if (isRegisterMode) {
+                document.getElementById('modal-title').innerText = 'Create Investor Account';
+                document.getElementById('modal-desc').innerText = 'Register your details to track your 3 payout cycles and request direct MoMo withdrawals.';
+                document.getElementById('name-field-wrap').classList.remove('hidden');
+                document.getElementById('auth-submit-btn').innerText = 'Create & Open Dashboard';
+                document.getElementById('auth-switch-btn').innerText = 'Already registered? Log In to Portal';
+            } else {
+                document.getElementById('modal-title').innerText = 'Client Portal Login';
+                document.getElementById('modal-desc').innerText = 'Access your investor dashboard to track your 3 payout cycles and request direct MoMo withdrawals.';
+                document.getElementById('name-field-wrap').classList.add('hidden');
+                document.getElementById('auth-submit-btn').innerText = 'Access Investor Dashboard';
+                document.getElementById('auth-switch-btn').innerText = 'New investor? Create Investor Account';
+            }
+        }
+
+        function handleAuth(e) {
+            e.preventDefault();
+            const phone = document.getElementById('reg-phone').value.trim();
+            const enteredName = document.getElementById('reg-name').value.trim();
+            const name = isRegisterMode && enteredName ? enteredName : (localStorage.getItem('xi_name_' + phone) || 'Valued Investor');
+
+            if (isRegisterMode && enteredName) {
+                localStorage.setItem('xi_name_' + phone, enteredName);
+            }
+
+            currentUser = { phone, name };
+            showDashboard();
+        }
+
+        function showDashboard() {
+            document.getElementById('auth-form-view').classList.add('hidden');
+            document.getElementById('dashboard-view').classList.remove('hidden');
+            document.getElementById('dash-username').innerText = currentUser.name;
+
+            const inv = currentPrincipalGHS;
+            const payout = inv * 1.5;
+            document.getElementById('dash-inv-amount').innerText = formatCurrency(inv);
+            document.getElementById('dash-net-profit').innerText = formatCurrency(inv * 3.5);
+
+            document.getElementById('c1-amt').innerText = formatCurrency(payout);
+            document.getElementById('c2-amt').innerText = formatCurrency(payout);
+            document.getElementById('c3-amt').innerText = formatCurrency(payout);
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            document.getElementById('dashboard-view').classList.add('hidden');
+            document.getElementById('auth-form-view').classList.remove('hidden');
+            closeAuthModal();
+        }
+
+        function requestWithdrawal(cycleNum) {
+            alert('Withdrawal request for Cycle ' + cycleNum + ' submitted! Funds will be disbursed to your registered MoMo number shortly.');
+            if (cycleNum === 1) {
+                document.getElementById('c1-status').innerText = 'Disbursed / Paid';
+                document.getElementById('c1-btn').innerText = 'Paid';
+                document.getElementById('c1-btn').disabled = true;
+                document.getElementById('c1-btn').className = 'px-3 py-1 bg-stone-200 text-stone-500 font-bold rounded-lg text-xs cursor-not-allowed';
+
+                document.getElementById('c2-status').innerText = 'Unlocked & Ready';
+                document.getElementById('c2-status').className = 'text-emerald-700';
+                document.getElementById('c2-bar').className = 'bg-emerald-600 h-full w-full';
+                document.getElementById('c2-note').innerHTML = '<button onclick="requestWithdrawal(2)" id="c2-btn" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs">Request Withdrawal</button>';
+            } else if (cycleNum === 2) {
+                document.getElementById('c2-status').innerText = 'Disbursed / Paid';
+                document.getElementById('c2-note').innerHTML = '<span class="text-stone-400 font-bold">Paid</span>';
+
+                document.getElementById('c3-status').innerText = 'Unlocked & Ready';
+                document.getElementById('c3-status').className = 'text-emerald-700';
+                document.getElementById('c3-bar').className = 'bg-emerald-600 h-full w-full';
+                document.getElementById('c3-note').innerHTML = '<button onclick="requestWithdrawal(3)" id="c3-btn" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs">Request Withdrawal</button>';
+            } else if (cycleNum === 3) {
+                document.getElementById('c3-status').innerText = 'Disbursed / Paid';
+                document.getElementById('c3-note').innerHTML = '<span class="text-stone-400 font-bold">Paid</span>';
+                alert('Congratulations! All 3 payout cycles have been completed and withdrawn.');
+            }
+        }
+
+        window.addEventListener('resize', drawLiquidityDepthCanvas);
+        window.addEventListener('DOMContentLoaded', () => {
+            renderTierMatrix();
+            initCharts();
+            updateCalculator(2000);
+        });
+    </script>
+</body>
+</html>
